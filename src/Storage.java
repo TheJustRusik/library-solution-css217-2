@@ -1,19 +1,23 @@
 import items.Item;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 public class Storage {
-    HashMap<String, Item> items;
+    private HashMap<String, Item> items;
 
-    public void takeItem(String UUID) {
+    public Item takeItem(String UUID) {
         if (!items.containsKey(UUID)) {
             throw new NoSuchElementException("Item with UUID " + UUID + " not found");
         }
-        items.remove(UUID);
+        return items.remove(UUID);
     }
     public void storeItem(Item item) {
         items.put(item.getUUID(), item);
+    }
+    public ArrayList<Item> getAllItems() {
+        return new ArrayList<>(items.values());
     }
 
     public Storage() {

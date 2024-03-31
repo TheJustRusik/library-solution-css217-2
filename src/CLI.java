@@ -1,17 +1,21 @@
-import users.StuffBase;
-import users.UserBase;
+import items.Book;
+import items.Compact;
+import items.Item;
+import items.Magazine;
+import users.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CLI {
     static Scanner sc = new Scanner(System.in);
-    private ArrayList<StuffBase> stuffs;
-    private ArrayList<UserBase> users;
-    private Library library;
-    public CLI(Library library, ArrayList<StuffBase> stuffs, ArrayList<UserBase> users) {
+    private final ArrayList<StaffBase> staffs;
+    private final ArrayList<UserBase> users;
+    private final Library library;
+    public CLI(Library library, ArrayList<StaffBase> staffs, ArrayList<UserBase> users) {
         this.library = library;
-        this.stuffs = stuffs;
+        this.staffs = staffs;
         this.users = users;
     }
     public void run() {
@@ -19,9 +23,11 @@ public class CLI {
             System.out.print(
                     """
                     Available commands:
-                        1 - Switch to client
-                        2 - Switch to employee
+                        1 - Switch to users
+                        2 - Switch to staffs
                         3 - Switch to library
+                        4 - Add new User
+                        5 - Add new Staff
                         Any - Exit
                     Input:\s"""
             );
@@ -29,8 +35,8 @@ public class CLI {
             switch (input){
                 case "1" -> {
                     System.out.println("Choose user:");
-                    int i = 0;
-                    users.forEach(c -> System.out.println("    " + i + " " + c.getUsername()));
+                    AtomicInteger i = new AtomicInteger(0);
+                    users.forEach(c -> System.out.println("    " + i.getAndIncrement() + " - " + c.getUsername()));
                     System.out.print(
                             """
                                 Any - Exit
@@ -46,49 +52,86 @@ public class CLI {
 
                 }
                 case "2" -> {
-                    System.out.println("Choose stuff:");
-                    int i = 0;
-                    users.forEach(c -> System.out.println("    " + i + " " + c.getUsername()));
+                    System.out.println("Choose staff:");
+                    AtomicInteger i = new AtomicInteger(0);
+                    staffs.forEach(c -> System.out.println("    " + i.getAndIncrement() + " - " + c.getUsername()));
                     System.out.print(
                             """
                                 Any - Exit
                             Input:\s"""
                     );
                     try{
-                        int stuffIndex = sc.nextInt();
-                        StuffBase stuff = stuffs.get(stuffIndex);
-                        stuffCommands(stuff);
+                        int staffIndex = sc.nextInt();
+                        StaffBase staff = staffs.get(staffIndex);
+                        staffCommands(staff);
                     }catch (Exception ignored){
 
                     }
-
                 }
                 case "3" -> libraryCommands();
+                case "4" -> {
+                    System.out.print("""
+                            Which User?
+                                1 - User
+                                2 - Patron
+                            Input:\s""");
+                    String type = sc.next();
+                    System.out.print("Username: ");
+                    String username = sc.next();
+                    switch (type) {
+                        case "1" -> users.add(new User(username));
+                        case "2" -> users.add(new Patron(username));
+                    }
+                }
+                case "5" -> {
+                    System.out.print("Username: ");
+                    String name = sc.next();
+                    staffs.add(new Librarian(name));
+                }
                 default -> {
                     return;
                 }
-
             }
 
         }
     }
 
-    private void stuffCommands(StuffBase stuff) {
+    private void staffCommands(StaffBase staff) {
         while (true) {
             System.out.print(
-                """
-                Available commands:
-                    1 - Add new Item
-                    Any - Exit
-                Input:\s"""
+                    """
+                    Available commands:
+                        1 - Create new item
+                        2 - Delete item
+                        Any - Exit
+                    Input:\s"""
             );
             switch (sc.next()) {
                 case "1" -> {
-                    System.out.print("Provide type: ");
-                    String type = sc.next();
-                    System.out.print("Provide " + type + "'s title: ");
-                    String title = sc.next();
-                    library.storeItem(stuff.createItem(type, title));
+                    System.out.print("""
+                        Which type of item you want create?
+                            1 - Book
+                            2 - Magazine
+                            3 - Compact
+                            Any - Abort operation
+                        Input:\s""");
+                    switch (sc.next()) {
+                        case "1" -> {
+                            System.out.print("Book name: ");
+                            library.storeItem(new Book(sc.next()));
+                        }
+                        case "2" -> {
+                            System.out.print("Magazine name: ");
+                            library.storeItem(new Magazine(sc.next()));
+                        }
+                        case "3" -> {
+                            System.out.print("Compact name: ");
+                            library.storeItem(new Compact(sc.next()));
+                        }
+                    }
+                }
+                case "2" -> {
+                    System.out.print("Choose item to delete: ");
                 }
                 default -> {
                     return;
@@ -97,30 +140,65 @@ public class CLI {
         }
 
     }
-    private void userCommands(UserBase userBase) {
-        System.out.print(
-                """
-                Available commands:
-                    1 - Take item
-                    2 - Return item
-                    3 - Show my items
-                    Any - Exit
-                Input:\s"""
-        );
-        switch (sc.next()) {
-            case "1" -> {
+    private void userCommands(UserBase userBase) throws Exception {
+        while (true) {
+            System.out.print(
+                    """
+                            Available commands:
+                                1 - Take item
+                                2 - Return item
+                                3 - Show my items
+                                Any - Exit
+                            Input:\s"""
+            );
+
+            switch (sc.next()) {
+                case "1" -> {
+                    System.out.println("Choose what to take:");
+                    AtomicInteger i = new AtomicInteger(0);
+                    library.getAllItems().forEach(item -> System.out.println("    " + i.getAndIncrement() + " - " + item.getName() + " " + item.getType()));
+                    ArrayList<String> itemsUUIDS = new ArrayList<>(library.getAllItems().stream().map(Item::getUUID).toList());
+                    System.out.print("""
+                                Any - Exit
+                            Input:\s""");
+                    try {
+                        int itemIndex = sc.nextInt();
+                        userBase.takeItem(library.takeItem(itemsUUIDS.get(itemIndex)));
+                    } catch (Exception ignored) {
+
+                    }
+                }
+                case "2" -> {
+                    System.out.println("Choose what to return:");
+                    AtomicInteger i = new AtomicInteger(0);
+                    userBase.getItems().forEach(item -> System.out.println("    " + i.getAndIncrement() + " - " + item.getName() + " " + item.getType()));
+                    ArrayList<String> itemsUUIDS = new ArrayList<>(userBase.getItems().stream().map(Item::getUUID).toList());
+                    System.out.print("""
+                                Any - Exit
+                            Input:\s""");
+                    try {
+                        int itemIndex = sc.nextInt();
+                        userBase.returnItem(itemsUUIDS.get(itemIndex));
+                    }catch (Exception ignored) {
+
+                    }
+                }
+                case "3" -> {
+                    System.out.println("Items:");
+                    AtomicInteger i = new AtomicInteger(0);
+                    userBase.getItems().forEach(item -> System.out.println("    " + i.getAndIncrement() + " - " + item.getName() + " " + item.getType() + " " + item.getUUID()));
+                    System.out.println("End.");
+                }
+                default -> {
+                    return;
+                }
 
             }
         }
     }
     private void libraryCommands() {
-        System.out.println(
-                """
-                Available commands:
-                    1 - Show all books
-                    Any - Exit
-                """
-        );
+
+
     }
 
 }

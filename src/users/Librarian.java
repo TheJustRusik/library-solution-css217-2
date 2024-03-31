@@ -5,12 +5,16 @@ import items.Compact;
 import items.Item;
 import items.Magazine;
 
-import java.util.UUID;
+public class Librarian implements StaffBase {
+    private final String name;
 
-public class Librarian implements StuffBase{
+    public Librarian(String name) {
+        this.name = name;
+    }
+
     @Override
     public String getUsername() {
-        return null;
+        return name;
     }
 
     @Override
