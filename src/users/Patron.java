@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Patron implements UserBase {
-    private String username;
+    private final String username;
     private final ArrayList<Item> items;
 
     @Override
@@ -20,12 +20,13 @@ public class Patron implements UserBase {
     }
 
     @Override
-    public void returnItem(String uuid) {
+    public Item returnItem(String uuid) {
         Item returning = items.stream().filter(
                 item -> Objects.equals(item.getUUID(), uuid)
         ).findFirst().orElseThrow();
 
         items.remove(returning);
+        return returning;
     }
 
     @Override

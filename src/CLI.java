@@ -1,10 +1,7 @@
-import items.Book;
-import items.Compact;
 import items.Item;
-import items.Magazine;
 import users.*;
-
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -118,21 +115,19 @@ public class CLI {
                     switch (sc.next()) {
                         case "1" -> {
                             System.out.print("Book name: ");
-                            library.storeItem(new Book(sc.next()));
+                            library.storeItem(staff.createItem("Book", sc.next()));
                         }
                         case "2" -> {
                             System.out.print("Magazine name: ");
-                            library.storeItem(new Magazine(sc.next()));
+                            library.storeItem(staff.createItem("Magazine", sc.next()));
                         }
                         case "3" -> {
                             System.out.print("Compact name: ");
-                            library.storeItem(new Compact(sc.next()));
+                            library.storeItem(staff.createItem("Compact", sc.next()));
                         }
                     }
                 }
-                case "2" -> {
-                    System.out.print("Choose item to delete: ");
-                }
+                case "2" -> System.out.print("Choose item to delete: ");
                 default -> {
                     return;
                 }
@@ -140,7 +135,7 @@ public class CLI {
         }
 
     }
-    private void userCommands(UserBase userBase) throws Exception {
+    private void userCommands(UserBase userBase) {
         while (true) {
             System.out.print(
                     """
@@ -163,7 +158,11 @@ public class CLI {
                             Input:\s""");
                     try {
                         int itemIndex = sc.nextInt();
-                        userBase.takeItem(library.takeItem(itemsUUIDS.get(itemIndex)));
+                        Item itemToTake;
+                        if( (itemToTake = library.getItem(itemsUUIDS.get(itemIndex))) != null ){
+                            userBase.takeItem(itemToTake);
+                            library.takeItem(itemsUUIDS.get(itemIndex));
+                        }
                     } catch (Exception ignored) {
 
                     }
@@ -178,7 +177,9 @@ public class CLI {
                             Input:\s""");
                     try {
                         int itemIndex = sc.nextInt();
-                        userBase.returnItem(itemsUUIDS.get(itemIndex));
+                        library.storeItem(
+                                userBase.returnItem(itemsUUIDS.get(itemIndex))
+                        );
                     }catch (Exception ignored) {
 
                     }
@@ -197,7 +198,59 @@ public class CLI {
         }
     }
     private void libraryCommands() {
+        while (true) {
+            System.out.print(
+                    """
+                    Available commands:
+                        1 - List all items
+                        2 - List all Books
+                        3 - List all Compacts
+                        4 - List all Magazines
+                        Any - Exit
+                    Input:\s"""
+            );
 
+            switch (sc.next()) {
+                case "1" -> {
+                    System.out.println("Library items:");
+                    library.getAllItems().forEach(item -> System.out.println(item.getName() + " " + item.getType() + " " + item.getUUID()));
+                    System.out.println("End");
+                }
+                case "2" -> {
+                    System.out.println("Library books:");
+                    library.getAllItems().stream()
+                            .filter(item ->
+                                    Objects.equals(item.getType(), "Book")
+                            ).forEach(item ->
+                                    System.out.println(item.getName() + " "  + item.getUUID())
+                            );
+                    System.out.println("End");
+                }
+                case "3" -> {
+                    System.out.println("Library compacts:");
+                    library.getAllItems().stream()
+                            .filter(item ->
+                                    Objects.equals(item.getType(), "Compact")
+                            ).forEach(item ->
+                                    System.out.println(item.getName() + " "  + item.getUUID())
+                            );
+                    System.out.println("End");
+                }
+                case "4" -> {
+                    System.out.println("Library magazines:");
+                    library.getAllItems().stream()
+                            .filter(item ->
+                                    Objects.equals(item.getType(), "Magazine")
+                            ).forEach(item ->
+                                    System.out.println(item.getName() + " "  + item.getUUID())
+                            );
+                    System.out.println("End");
+                }
+                default -> {
+                    return;
+                }
+            }
+        }
 
     }
 

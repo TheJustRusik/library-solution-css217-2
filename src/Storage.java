@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 public class Storage {
-    private HashMap<String, Item> items;
+    private final HashMap<String, Item> items;
 
     public Item takeItem(String UUID) {
         if (!items.containsKey(UUID)) {
@@ -15,6 +15,9 @@ public class Storage {
     }
     public void storeItem(Item item) {
         items.put(item.getUUID(), item);
+    }
+    public Item getItem(String UUID) {
+        return items.get(UUID);
     }
     public ArrayList<Item> getAllItems() {
         return new ArrayList<>(items.values());

@@ -16,6 +16,9 @@ public class Library {
     public Item takeItem(String uuid) {
         return storage.takeItem(uuid);
     }
+    public Item getItem(String uuid) {
+        return storage.getItem(uuid);
+    }
 
 
 

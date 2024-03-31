@@ -1,9 +1,7 @@
 package items;
 
-import java.util.UUID;
-
 public class Book implements Item{
-    private String name;
+    private final String name;
     private final String UUID;
     @Override
     public String getUUID() {

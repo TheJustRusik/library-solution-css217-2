@@ -20,13 +20,14 @@ public class User implements UserBase {
 
 
     @Override
-    public void returnItem(String uuid) {
+    public Item returnItem(String uuid) {
         Item returning = items.stream().filter(
                 item -> Objects.equals(item.getUUID(), uuid)
         ).findFirst().orElseThrow();
 
         items.remove(returning);
         itemsLimit++;
+        return returning;
     }
 
     @Override

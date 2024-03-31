@@ -1,12 +1,8 @@
 package items;
 
-import items.Item;
-
-import java.util.UUID;
-
 public class Magazine implements Item {
-    private String UUID;
-    private String name;
+    private final String UUID;
+    private final String name;
     @Override
     public String getUUID() {
         return UUID;
