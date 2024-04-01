@@ -108,8 +108,7 @@ public class CLI {
 
     private void staffCommands(StaffBase staff) throws Exception {
         while (true) {
-            System.out.print(
-                    """
+            System.out.print("""
                     Available commands:
                         1 - Create new item
                         2 - Delete item
