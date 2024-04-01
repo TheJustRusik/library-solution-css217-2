@@ -127,7 +127,23 @@ public class CLI {
                         }
                     }
                 }
-                case "2" -> System.out.print("Choose item to delete: ");
+                case "2" -> {
+                    System.out.println("Choose item to delete: ");
+                    var i = new AtomicInteger(0);
+                    library.getAllItems().forEach(item ->
+                            System.out.println("    " + i.getAndIncrement() + " " + item.getName() + " " + item.getUUID())
+                    );
+                    var itemUUIDS = new ArrayList<>(library.getAllItems().stream().map(Item::getUUID).toList());
+                    System.out.print("""
+                                Any - Exit
+                            Input:\s""");
+                    try{
+                        int itemIndex = sc.nextInt();
+                        library.takeItem(itemUUIDS.get(itemIndex));
+                    }catch (Exception ignored){
+
+                    }
+                }
                 default -> {
                     return;
                 }
