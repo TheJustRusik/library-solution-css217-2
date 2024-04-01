@@ -1,5 +1,10 @@
 import items.Item;
+import repositories.implementation.Library;
 import users.*;
+import users.implementation.Librarian;
+import users.implementation.Patron;
+import users.implementation.User;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
@@ -31,6 +36,10 @@ public class CLI {
             String input = sc.next();
             switch (input){
                 case "1" -> {
+                    if(users.isEmpty()) {
+                        System.out.println("There is no users, add one to use user's commands!");
+                        continue;
+                    }
                     System.out.println("Choose user:");
                     AtomicInteger i = new AtomicInteger(0);
                     users.forEach(c -> System.out.println("    " + i.getAndIncrement() + " - " + c.getUsername()));
@@ -49,6 +58,10 @@ public class CLI {
 
                 }
                 case "2" -> {
+                    if(staffs.isEmpty()){
+                        System.out.println("There is no staff, add one to use staff commands!");
+                        continue;
+                    }
                     System.out.println("Choose staff:");
                     AtomicInteger i = new AtomicInteger(0);
                     staffs.forEach(c -> System.out.println("    " + i.getAndIncrement() + " - " + c.getUsername()));
@@ -128,6 +141,10 @@ public class CLI {
                     }
                 }
                 case "2" -> {
+                    if(library.getAllItems().isEmpty()) {
+                        System.out.println("Library have 0 items, nothing to delete...");
+                        continue;
+                    }
                     System.out.println("Choose item to delete: ");
                     var i = new AtomicInteger(0);
                     library.getAllItems().forEach(item ->
@@ -165,6 +182,10 @@ public class CLI {
 
             switch (sc.next()) {
                 case "1" -> {
+                    if(library.getAllItems().isEmpty()) {
+                        System.out.println("Library have 0 items, nothing to take...");
+                        continue;
+                    }
                     System.out.println("Choose what to take:");
                     AtomicInteger i = new AtomicInteger(0);
                     library.getAllItems().forEach(item -> System.out.println("    " + i.getAndIncrement() + " - " + item.getName() + " " + item.getType()));
@@ -184,6 +205,10 @@ public class CLI {
                     }
                 }
                 case "2" -> {
+                    if (userBase.getItems().isEmpty()) {
+                        System.out.println(userBase.getUsername() + " have 0 items, nothing to return...");
+                        continue;
+                    }
                     System.out.println("Choose what to return:");
                     AtomicInteger i = new AtomicInteger(0);
                     userBase.getItems().forEach(item -> System.out.println("    " + i.getAndIncrement() + " - " + item.getName() + " " + item.getType()));
@@ -201,6 +226,10 @@ public class CLI {
                     }
                 }
                 case "3" -> {
+                    if (userBase.getItems().isEmpty()) {
+                        System.out.println(userBase.getUsername() + " have 0 items, nothing to show...");
+                        continue;
+                    }
                     System.out.println("Items:");
                     AtomicInteger i = new AtomicInteger(0);
                     userBase.getItems().forEach(item -> System.out.println("    " + i.getAndIncrement() + " - " + item.getName() + " " + item.getType() + " " + item.getUUID()));

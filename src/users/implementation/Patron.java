@@ -1,6 +1,7 @@
-package users;
+package users.implementation;
 
 import items.Item;
+import users.UserBase;
 
 import java.util.ArrayList;
 import java.util.Objects;

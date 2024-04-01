@@ -1,8 +1,10 @@
+package repositories.implementation;
+
 import items.Item;
 
 import java.util.ArrayList;
 
-public class Library {
+public class Library implements repositories.Library {
     private final Storage storage;
     public Library() {
         storage = new Storage();
@@ -13,8 +15,8 @@ public class Library {
     public ArrayList<Item> getAllItems() {
         return storage.getAllItems();
     }
-    public Item takeItem(String uuid) {
-        return storage.takeItem(uuid);
+    public void takeItem(String uuid) {
+        storage.takeItem(uuid);
     }
     public Item getItem(String uuid) {
         return storage.getItem(uuid);

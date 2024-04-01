@@ -1,10 +1,12 @@
+package repositories.implementation;
+
 import items.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
-public class Storage {
+public class Storage implements repositories.Storage {
     private final HashMap<String, Item> items;
 
     public Item takeItem(String UUID) {
