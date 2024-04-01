@@ -5,7 +5,7 @@ import items.Item;
 import java.util.ArrayList;
 
 public class Library implements repositories.Library {
-    private final Storage storage;
+    private final repositories.Storage storage;
     public Library() {
         storage = new Storage();
     }

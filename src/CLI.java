@@ -1,5 +1,5 @@
 import items.Item;
-import repositories.implementation.Library;
+import repositories.Library;
 import users.*;
 import users.implementation.Librarian;
 import users.implementation.Patron;
@@ -106,7 +106,7 @@ public class CLI {
         }
     }
 
-    private void staffCommands(StaffBase staff) {
+    private void staffCommands(StaffBase staff) throws Exception {
         while (true) {
             System.out.print(
                     """

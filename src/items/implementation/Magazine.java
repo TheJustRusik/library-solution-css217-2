@@ -1,8 +1,10 @@
-package items;
+package items.implementation;
 
-public class Compact implements Item{
-    private final String name;
+import items.Item;
+
+public class Magazine implements Item {
     private final String UUID;
+    private final String name;
     @Override
     public String getUUID() {
         return UUID;
@@ -15,10 +17,10 @@ public class Compact implements Item{
 
     @Override
     public String getType() {
-        return "Compact";
+        return "Magazine";
     }
 
-    public Compact(String name) {
+    public Magazine(String name) {
         this.name = name;
         this.UUID = java.util.UUID.randomUUID().toString();
     }
